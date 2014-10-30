@@ -64,6 +64,22 @@ int AddNode::evaluate() {
    return getLeftSubTree()->evaluate() + getRightSubTree()->evaluate();
 }
 
+TimesNode::TimesNode(AST* left, AST* right):
+   BinaryNode(left,right)
+{}
+
+int TimesNode::evaluate() {
+   return getLeftSubTree()->evaluate() * getRightSubTree()->evaluate();
+}
+
+DivideNode::DivideNode(AST* left, AST* right):
+   BinaryNode(left,right)
+{}
+
+int DivideNode::evaluate() {
+   return getLeftSubTree()->evaluate() / getRightSubTree()->evaluate();
+}
+
 SubNode::SubNode(AST* left, AST* right):
    BinaryNode(left,right)
 {}
@@ -79,4 +95,15 @@ NumNode::NumNode(int n) :
 
 int NumNode::evaluate() {
    return val;
+} 
+
+StoreNode::StoreNode(AST* sub) :
+   UnaryNode(sub)
+{}
+
+int StoreNode::evaluate(){
+
+  int value = getSubTree()->evaluate();
+  calc->store(value);
+  return value;
 }
