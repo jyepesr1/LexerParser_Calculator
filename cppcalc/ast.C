@@ -107,3 +107,9 @@ int StoreNode::evaluate(){
   calc->store(value);
   return value;
 }
+
+RecallNode::RecallNode() : AST() {}
+
+int RecallNode::evaluate(){
+  return calc->recall();
+}

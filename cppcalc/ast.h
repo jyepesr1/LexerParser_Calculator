@@ -72,7 +72,14 @@ class NumNode : public AST {
    int val;
 };
 
-class StoreNode : UnaryNode {
+class RecallNode : public AST {
+ public:
+   RecallNode();
+
+   int evaluate();
+};
+
+class StoreNode : public UnaryNode {
  public:
    StoreNode(AST* sub);
 
