@@ -26,7 +26,9 @@ int Token::getCol() const {
   return col;
 }
 
-string Token::getLex() const { return ""; }
+string Token::getLex() const { 
+  return ""; 
+}
 
 LexicalToken::LexicalToken(TokenType typ, string* lex, int lineNum, int colNum) :
    Token(typ,lineNum,colNum),
