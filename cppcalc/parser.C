@@ -76,6 +76,9 @@ AST* Parser::RestTerm(AST* e) {
    if (t->getType() == divide)
       return RestTerm(new DivideNode(e,Storable()));
 
+   if (t->getType() == mod)
+      return RestTerm(new ModNode(e,Storable()));
+
    scan->putBackToken();
 
    return e;

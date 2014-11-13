@@ -88,6 +88,14 @@ int SubNode::evaluate() {
    return getLeftSubTree()->evaluate() - getRightSubTree()->evaluate();
 }
 
+ModNode::ModNode(AST* left, AST* right):
+   BinaryNode(left,right)
+{}
+
+int ModNode::evaluate() {
+   return getLeftSubTree()->evaluate() % getRightSubTree()->evaluate();
+}
+
 NumNode::NumNode(int n) :
    AST(),
    val(n)

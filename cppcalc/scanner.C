@@ -73,9 +73,10 @@ Token* Scanner::getToken() {
             else if (c=='+') state=3;
             else if (c=='-') state=4;
             else if (c=='*') state=5;
-            else if (c=='/') state=6;
-            else if (c=='(') state=7;
-            else if (c==')') state=8;
+            else if (c=='%') state=6;
+            else if (c=='/') state=7;
+            else if (c=='(') state=8;
+            else if (c==')') state=9;
             else if (c=='\n') {
                colCount=-1;
                lineCount++;
@@ -125,14 +126,18 @@ Token* Scanner::getToken() {
             foundOne=true;
             break;
          case 6 :
-            type = divide;
+            type = mod;
             foundOne=true;
             break;
          case 7 :
-            type = lparen;
+            type = divide;
             foundOne=true;
             break;
          case 8 :
+            type = lparen;
+            foundOne=true;
+            break;
+         case 9 :
             type = rparen;
             foundOne=true;
             break;

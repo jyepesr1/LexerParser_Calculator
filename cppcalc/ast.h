@@ -62,6 +62,13 @@ class DivideNode : public BinaryNode {
    int evaluate();
 };
 
+class ModNode : public BinaryNode {
+ public:
+   ModNode(AST* left, AST* right);
+   
+   int evaluate();
+};
+
 class NumNode : public AST {
  public:
    NumNode(int n);
