@@ -8,6 +8,7 @@
 
 Calculator::Calculator():
    memory(0)
+   variables()
 {}
 
 int Calculator::eval(string expr) {
@@ -31,4 +32,8 @@ void Calculator::store(int val) {
 
 int Calculator::recall() {
    return memory;
+}
+
+int Calculator::getId(string a){
+	return variables[a];
 }

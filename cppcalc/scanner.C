@@ -77,6 +77,8 @@ Token* Scanner::getToken() {
             else if (c=='/') state=7;
             else if (c=='(') state=8;
             else if (c==')') state=9;
+            else if (c=='=') state=10;
+            else if (c==';') state=11;
             else if (c=='\n') {
                colCount=-1;
                lineCount++;
@@ -140,6 +142,14 @@ Token* Scanner::getToken() {
          case 9 :
             type = rparen;
             foundOne=true;
+            break;
+         case 10 :
+            type = equals;
+            foundOne=true;
+            break;
+         case 11 :
+            type = semicolon;
+            foundOne= true;
             break;
       }
       

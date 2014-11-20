@@ -3,31 +3,36 @@
 #include <string>
 #include "calcex.h"
 #include "calculator.h"
+#include <cstdlib>
 using namespace std;
 
 Calculator* calc;
 
-int main(int argc, char* argv[]) {
-   string line;
+int main(int argc, char* argv[], char* env[]) {
+  string line;
  
-   try {
+  calc = new Calculator();
 
-      cout << "Please enter a calculator expression: ";
+  do{
+   
+    try {
+
+      cout << "> ";
 
       getline(cin, line);
       // line + '\n';
-
-      calc = new Calculator();
-
       int result = calc->eval(line);
 
-      cout << "The result is " << result << endl;
+      cout << "= " << result << endl;
 
-      delete calc;
 
-   }
-   catch(Exception ex) {
+
+    }
+    catch(Exception ex) {
       cout << "Program Aborted due to exception!" << endl;
-   }
+    }
+  }while(cin);
+
+  delete calc;
 }
    

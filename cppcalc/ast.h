@@ -1,5 +1,6 @@
 #ifndef ast_h
 #define ast_h
+#include <string>
 
 using namespace std;
 
@@ -79,6 +80,17 @@ class NumNode : public AST {
    int val;
 };
 
+class IdentifierNode : public AST{
+ public:
+   IdentifierNode(string& id);
+
+   int evaluate();
+ 
+ private:
+   string id;
+
+};
+
 class RecallNode : public AST {
  public:
    RecallNode();
@@ -89,6 +101,27 @@ class RecallNode : public AST {
 class StoreNode : public UnaryNode {
  public:
    StoreNode(AST* sub);
+
+   int evaluate();
+};
+
+class PlusNode : public UnaryNode {
+ public:
+   PlusNode(AST* sub);
+
+   int evaluate();
+};
+
+class MinusNode : public UnaryNode {
+ public:
+   MinusNode(AST* sub);
+
+   int evaluate();
+};
+
+class ClearNode : public AST {
+ public:
+   ClearNode();
 
    int evaluate();
 };

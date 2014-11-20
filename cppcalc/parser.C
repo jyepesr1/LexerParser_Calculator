@@ -2,6 +2,7 @@
 #include "calcex.h"
 #include <string>
 #include <sstream>
+#include "token.h"
 
 Parser::Parser(istream* in) {
    scan = new Scanner(in);
@@ -17,16 +18,81 @@ AST* Parser::parse() {
    return Prog();
 }
 
-AST* Parser::Prog() {
-   AST* result = Expr();
+// AST* Parser::Prog() {
+//    AST* result = Expr();
+//    Token* t = scan->getToken();
+
+//    if (t->getType() != eof) {
+//       cout << "Syntax Error: Expected EOF, found token at column " << t->getCol() << endl;
+//       throw ParseError;
+//    }
+
+//    return result;
+// }
+
+AST* Parser::Prog(){
+   AST* result = Stmts(NULL);
+   
    Token* t = scan->getToken();
 
-   if (t->getType() != eof) {
-      cout << "Syntax Error: Expected EOF, found token at column " << t->getCol() << endl;
-      throw ParseError;
-   }
+  if (t->getType() != eof) {
+     cout << "Syntax Error: Expected EOF, found token at column " << t->getCol() << endl;
+     throw ParseError;
+  }
 
-   return result;
+  return result;
+}
+
+AST* Parser::Stmts(AST* e){
+
+   Token* t = scan->getToken();
+
+   if(t->getType() == identifier){
+      scan->putBackToken();
+      return Stmts(Stmt());
+   } 
+   scan->putBackToken();
+   return e;
+ }
+
+AST* Parser::Stmt(){
+    Token* t = scan->getToken();
+    
+    if(t->getType() == identifier){
+        t= scan->getToken();
+        if(t->getType() == equals){
+            AST* result = Expr();
+            t=scan->getToken();
+            if(t->getType() == semicolon){
+              return result;  
+            }else{
+              cout << "Expected ';' found: " 
+              << t->getType() << " at line: "
+              << t->getLine() << " at Col: "
+              << t->getCol() 
+              << endl;
+
+          throw ParseError;    
+            }
+            
+        }else{
+          cout << "Expected '=' found: " 
+          << t->getType() << " at line: "
+          << t->getLine() << " at Col: "
+          << t->getCol() 
+          << endl;
+
+          throw ParseError; 
+        }
+    }else{
+        cout << "Expected 'identifier' found: " 
+          << t->getType() << " at line: "
+          << t->getLine() << " at Col: "
+          << t->getCol() 
+          << endl;
+
+          throw ParseError; 
+    }
 }
 
 AST* Parser::Expr() {
@@ -85,27 +151,34 @@ AST* Parser::RestTerm(AST* e) {
 }
 
 AST* Parser::Storable() {
-  AST* result = Factor();
-  
-  Token* t = scan->getToken();
+    
+  return MemOperation(Factor());
+}
 
-  if(t->getType() == keyword){
-    if(t->getLex().compare("S") == 0){
-      return new StoreNode(result); 
-    }
-    else{
-      cout << "Expected S found: " 
-           << t->getType() << " at line: "
-           << t->getLine() << " at Col: "
-	   << t->getCol() 
-	   << endl;
+AST* Parser::MemOperation(AST* e){
+    Token* t= scan->getToken();
+    
+    if(t->getType()==keyword){
+        if(t->getLex().compare("S")==0){
+            return new StoreNode(e);
+        }
+        if(t->getLex().compare("P")==0){
+            return new PlusNode(e);
+        }
+        if(t->getLex().compare("M")==0){
+            return new MinusNode(e);
+        }
+    }else{
+       cout << "Expected 'keyword' found: " 
+            << t->getType() << " at line: "
+            << t->getLine() << " at Col: "
+            << t->getCol() 
+            << endl;
 
       throw ParseError; 
     }
-  }
-
-  scan->putBackToken();
-  return result;
+    
+   scan->putBackToken();
 }
 
 AST* Parser::Factor() {
@@ -127,8 +200,27 @@ AST* Parser::Factor() {
       cout << "Expected R found: " 
            << t->getType() << " at line: "
            << t->getLine() << " at Col: "
-	   << t->getCol() 
-	   << endl;
+      	   << t->getCol() 
+      	   << endl;
+
+      throw ParseError; 
+    }
+  }
+
+  // if(t->getType() == identifier){
+  //   return new IdentifierNode();
+  // }
+
+  if(t->getType() == keyword){
+    if(t->getLex().compare("C") == 0){
+      return new ClearNode(); 
+    }
+    else{
+      cout << "Expected C found: " 
+           << t->getType() << " at line: "
+           << t->getLine() << " at Col: "
+           << t->getCol() 
+           << endl;
 
       throw ParseError; 
     }
@@ -150,13 +242,13 @@ AST* Parser::Factor() {
       throw ParseError;
     }
   }
-  cout << "Expected number or R or ( found: " 
-       << t->getType() << " at line: "
-       << t->getLine() << " at Col: "
-       << t->getCol() 
-       << endl;
+  // cout << "Expected number or R or ( found: " 
+  //      << t->getType() << " at line: "
+  //      << t->getLine() << " at Col: "
+  //      << t->getCol() 
+  //      << endl;
       
-      throw ParseError;
+  //     throw ParseError;
        
 }
    

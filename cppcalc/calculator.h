@@ -2,6 +2,7 @@
 #define calculator_h
 
 #include <string>
+#include <map>
  
 using namespace std;
 
@@ -13,9 +14,12 @@ class Calculator {
    int eval(string expr);
    void store(int val);
    int recall();
+   int getId(string id);
+   void setVar(string id, int a);
 
  private:
    int memory;
+   map<string, int> variables;
 };
 
 extern Calculator* calc;
