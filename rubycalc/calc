@@ -1,4 +1,4 @@
-#!/usr/local/bin/ruby
+#!/usr/bin/ruby
 require 'stringio'
 require 'set'
 
@@ -25,7 +25,7 @@ end
 class Scanner
    def initialize(inStream)
       @istream = inStream
-		@keywords = Set.new(["S","R"])
+      @keywords = Set.new(["S","R"])
       @lineCount = 1
       @colCount = -1
       @needToken = true
@@ -37,7 +37,7 @@ class Scanner
    end
 
    def getToken()
-      if !@needToken
+      unless @needToken
          @needToken = true
          return @lastToken
       end
@@ -51,7 +51,7 @@ class Scanner
          return @lastToken
       end
 
-      while !foundOne
+      until foundOne
          @colCount = @colCount + 1
          case state
          when 0
@@ -114,7 +114,7 @@ class Scanner
             foundOne = true
          end
 
-         if !foundOne then
+         unless foundOne then
             lex.concat(c)
             c = @istream.getc()
          end
@@ -183,6 +183,26 @@ class SubNode < BinaryNode
       return @left.evaluate() - @right.evaluate()
    end
 end
+
+class TimesNode < BinaryNode
+  def initialize(left, right)
+    super(left, right)
+  end
+
+  def evaluate()
+	return @left.evaluate() * @right.evaluate()
+  end
+end
+
+class DivideNode < BinaryNode 
+  def initialize(left, right)
+    super(left, right)
+  end
+
+  def evaluate()
+	return @left.evaluate() / @right.evaluate()
+  end
+end
       
 class NumNode 
    def initialize(num)
@@ -193,7 +213,26 @@ class NumNode
       return @num
    end
 end   
-      
+
+
+class StoreNode() < UnaryNode
+   def initialize(subTree)
+     super(subTree)
+   end
+
+   def evaluate()
+     ret = @subTree.evaluate()
+     $calc.memory = ret
+     return ret
+   end
+end
+
+class Recall()
+  def evaluate()
+    return $calc.memory
+  end
+end
+     
 class Parser
    def initialize(istream)
       @scan = Scanner.new(istream)
@@ -237,43 +276,86 @@ private
    end
    
    def Term()
+      return RestTerm(Storable())
+
       # Write your Term() code here. This code is just temporary
       # so you can try the calculator out before finishing it.
 
-      t = @scan.getToken()
+     # t = @scan.getToken()
       
-      if t.type == :number then
-         val = t.lex.to_i
-         return NumNode.new(val)
-      end
+     # if t.type == :number then
+     #    val = t.lex.to_i
+     #    return NumNode.new(val)
+     # end
       
-      puts "Term not implemented\n"
-      
-      raise "Parse Error"
+     # raise "Parse Error"
    end
    
    def RestTerm(e)
-   
-      puts "RestTerm not implemented"
-      raise "Parse Error"
+       
+      t = @scan.getToken()
+      
+      if t.type == :times then
+         return RestExpr(TimesNode.new(e,Storable()))
+      end
+      
+      if t.type == :divide then
+         return RestExpr(DivideNode.new(e,Storable()))
+      end
+      
+      @scan.putBackToken()
+      
+      return e
    end
    
    def Storable()
-   
-      puts "Storable not implemented"
-      raise "Parse Error"
+     ret = Factor()
+     t = @scan.getToken()
+
+     if t.type == :keyword then
+       if t.lex === "S" then
+         return StoreNode.new(ret)
+       else
+         print "Expected 'S' founded", t.type, "\n"	
+         raise "Parse Exception"
+       end
+     end
+     
+     @scan.putBackToken() 
    end
    
    def Factor() 
-   
-      puts "Factor not implemented"
-      raise "Parse Error"
-   end         
-end
+     t = @scan.getToken()
+
+     if token.type == :number then
+       return NumNode.new(t.lex.to_i)
+     end
+
+     if token.type == :keyword then
+       if tokne.lex === "R" then
+         return RecallNode.new
+       else
+         print "Expected 'R' founded", t.type, "\n"
+       end
+     end 
+
+     if t.type == :lparen
+       ret = Expr()
+       t = @scan.getToken()
+       if t.type == :rparen
+          return ret
+       else
+         print "Expected ')' founded, t.type, "\n"
+         raise "Parse Exception"
+       end
+     end        
+
+     print "Expected number, 'R', '(' founded:", t.type, "\n"
+     raise "Parse Exception" 
+   end
 
 class Calculator
-	attr_reader :memory
-	attr_writer :memory
+	attr_acessor :memory
 	
 	def initialize()
 	  @memory = 0
