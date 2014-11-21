@@ -82,13 +82,20 @@ class NumNode : public AST {
 
 class IdentifierNode : public AST{
  public:
-   IdentifierNode(string& id);
+   IdentifierNode(string id);
 
    int evaluate();
  
  private:
    string id;
 
+};
+
+class EqualsNode : public BinaryNode {
+ public:
+   EqualsNode(AST* left, AST* right);
+
+   int evaluate();
 };
 
 class RecallNode : public AST {

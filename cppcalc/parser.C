@@ -60,11 +60,12 @@ AST* Parser::Stmt(){
     
     if(t->getType() == identifier){
         t= scan->getToken();
+        string id = t->getLex();
         if(t->getType() == equals){
             AST* result = Expr();
             t=scan->getToken();
             if(t->getType() == semicolon){
-              return result;  
+              return new EqualsNode(new IdentifierNode(id), result);  
             }else{
               cout << "Expected ';' found: " 
               << t->getType() << " at line: "
@@ -116,20 +117,6 @@ AST* Parser::RestExpr(AST* e) {
 
 AST* Parser::Term() {
    return RestTerm(Storable());
-   //write your Term() code here. This code is just temporary
-   //so you can try the calculator out before finishing it.
-//   Token* t = scan->getToken();
-//
-//  if (t->getType() == number) {
-//    istringstream in(t->getLex());
-//    int val;
-//    in >> val;
-//    return new NumNode(val);
-//   }
-//
-//  cout << "Term not implemented" << endl;
-//
-//  throw ParseError; 
 }
 
 AST* Parser::RestTerm(AST* e) {
@@ -207,9 +194,9 @@ AST* Parser::Factor() {
     }
   }
 
-  // if(t->getType() == identifier){
-  //   return new IdentifierNode();
-  // }
+  if(t->getType() == identifier){
+    return new IdentifierNode(t->getLex());
+  }
 
   if(t->getType() == keyword){
     if(t->getLex().compare("C") == 0){
@@ -242,13 +229,13 @@ AST* Parser::Factor() {
       throw ParseError;
     }
   }
-  // cout << "Expected number or R or ( found: " 
-  //      << t->getType() << " at line: "
-  //      << t->getLine() << " at Col: "
-  //      << t->getCol() 
-  //      << endl;
+  cout << "Expected number or R or ( found: " 
+       << t->getType() << " at line: "
+       << t->getLine() << " at Col: "
+       << t->getCol() 
+       << endl;
       
-  //     throw ParseError;
+      throw ParseError;
        
 }
    

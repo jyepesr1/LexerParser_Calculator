@@ -14,7 +14,7 @@ class Calculator {
    int eval(string expr);
    void store(int val);
    int recall();
-   int getId(string id);
+   int getVar(string id);
    void setVar(string id, int a);
 
  private:

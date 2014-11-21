@@ -97,6 +97,16 @@ int ModNode::evaluate() {
    return getLeftSubTree()->evaluate() % getRightSubTree()->evaluate();
 }
 
+EqualsNode::EqualsNode(AST* left, AST* right):
+   BinaryNode(left,right),
+{}
+
+int EqualsNode::evaluate(){
+  int ret = getRightSubTree()->evaluate();
+  calc->setVar(getLeftSubTree()->evaluate(), ret);
+  return ret;
+}
+
 NumNode::NumNode(int n) :
    AST(),
    val(n)
@@ -117,13 +127,13 @@ int StoreNode::evaluate(){
   return value;
 }
 
-IdentifierNode::IdentifierNode(string& id) :
+IdentifierNode::IdentifierNode(string id) :
   AST(),
   id(id)
 {}
 
 int IdentifierNode::evaluate(){
-  return calc->getId(id);
+  return calc->getVar(id);
 }
 
 RecallNode::RecallNode() : AST() {}

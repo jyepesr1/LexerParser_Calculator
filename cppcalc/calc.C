@@ -10,12 +10,12 @@ Calculator* calc;
 
 int main(int argc, char* argv[], char* env[]) {
   string line;
- 
+
   calc = new Calculator();
 
-  do{
-   
-    try {
+  try{
+
+    do {
 
       cout << "> ";
 
@@ -24,15 +24,12 @@ int main(int argc, char* argv[], char* env[]) {
       int result = calc->eval(line);
 
       cout << "= " << result << endl;
+    }while(cin);
 
-
-
-    }
-    catch(Exception ex) {
-      cout << "Program Aborted due to exception!" << endl;
-    }
-  }while(cin);
-
+  }catch(Exception ex) {
+    cout << "Program Aborted due to exception!" << endl;
+  }
+  
   delete calc;
 }
    
