@@ -8,10 +8,10 @@ using namespace std;
 //Uncomment this to get debug information
 //#define debug
 
-const int numberOfKeywords = 2;
+const int numberOfKeywords = 5;
 
 const string keywd[numberOfKeywords] = {
-  string("S"), string("R")
+  string("S"), string("R"), string("P"), string("M"), string("C")
 };
 
 int isLetter(char c) {
@@ -80,6 +80,8 @@ Token* Scanner::getToken() {
             else if (c=='=') state=10;
             else if (c==';') state=11;
             else if (c=='\n') {
+               foundOne=true;
+               type = eol;
                colCount=-1;
                lineCount++;
             }

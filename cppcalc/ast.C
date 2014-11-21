@@ -98,12 +98,11 @@ int ModNode::evaluate() {
 }
 
 EqualsNode::EqualsNode(AST* left, AST* right):
-   BinaryNode(left,right),
+   BinaryNode(left,right)
 {}
 
 int EqualsNode::evaluate(){
   int ret = getRightSubTree()->evaluate();
-  calc->setVar(getLeftSubTree()->evaluate(), ret);
   return ret;
 }
 

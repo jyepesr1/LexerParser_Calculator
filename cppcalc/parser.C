@@ -65,7 +65,7 @@ AST* Parser::Stmt(){
             AST* result = Expr();
             t=scan->getToken();
             if(t->getType() == semicolon){
-              return new EqualsNode(new IdentifierNode(id), result);  
+              return new EqualsNode(new IdentifierNode(id),result); 
             }else{
               cout << "Expected ';' found: " 
               << t->getType() << " at line: "
@@ -73,7 +73,7 @@ AST* Parser::Stmt(){
               << t->getCol() 
               << endl;
 
-          throw ParseError;    
+              throw ParseError;    
             }
             
         }else{
@@ -146,26 +146,29 @@ AST* Parser::MemOperation(AST* e){
     Token* t= scan->getToken();
     
     if(t->getType()==keyword){
-        if(t->getLex().compare("S")==0){
-            return new StoreNode(e);
-        }
-        if(t->getLex().compare("P")==0){
-            return new PlusNode(e);
-        }
-        if(t->getLex().compare("M")==0){
-            return new MinusNode(e);
-        }
-    }else{
-       cout << "Expected 'keyword' found: " 
-            << t->getType() << " at line: "
-            << t->getLine() << " at Col: "
-            << t->getCol() 
-            << endl;
+      if(t->getLex().compare("S")==0){
+        return new StoreNode(e);
+      }
+      else if(t->getLex().compare("P")==0){
+        return new PlusNode(e);
+      }
+      else if(t->getLex().compare("M")==0){
+        return new MinusNode(e);
+      }
+      else{
+         cout << "Expected 'S', 'P' or 'M' found: " 
+              << t->getType() << " at line: "
+              << t->getLine() << " at Col: "
+              << t->getCol() 
+              << endl;
 
-      throw ParseError; 
+        throw ParseError; 
+      }
     }
-    
+
    scan->putBackToken();
+
+   return e;
 }
 
 AST* Parser::Factor() {
@@ -183,8 +186,11 @@ AST* Parser::Factor() {
     if(t->getLex().compare("R") == 0){
       return new RecallNode(); 
     }
+    else if(t->getLex().compare("C") == 0){
+      return new ClearNode(); 
+    }
     else{
-      cout << "Expected R found: " 
+      cout << "Expected 'R' or 'C' found: " 
            << t->getType() << " at line: "
            << t->getLine() << " at Col: "
       	   << t->getCol() 
@@ -196,21 +202,6 @@ AST* Parser::Factor() {
 
   if(t->getType() == identifier){
     return new IdentifierNode(t->getLex());
-  }
-
-  if(t->getType() == keyword){
-    if(t->getLex().compare("C") == 0){
-      return new ClearNode(); 
-    }
-    else{
-      cout << "Expected C found: " 
-           << t->getType() << " at line: "
-           << t->getLine() << " at Col: "
-           << t->getCol() 
-           << endl;
-
-      throw ParseError; 
-    }
   }
   
   if(t->getType() == lparen){
