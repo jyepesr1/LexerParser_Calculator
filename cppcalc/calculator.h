@@ -12,6 +12,7 @@ class Calculator {
    Calculator();
 
    int eval(string expr);
+   string compile(string expr);
    void store(int val);
    int recall();
    int getVar(string id);

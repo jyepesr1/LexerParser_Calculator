@@ -18,18 +18,6 @@ AST* Parser::parse() {
    return Prog();
 }
 
-// AST* Parser::Prog() {
-//    AST* result = Expr();
-//    Token* t = scan->getToken();
-
-//    if (t->getType() != eof) {
-//       cout << "Syntax Error: Expected EOF, found token at column " << t->getCol() << endl;
-//       throw ParseError;
-//    }
-
-//    return result;
-// }
-
 AST* Parser::Prog(){
    AST* result = Stmts(NULL);
    

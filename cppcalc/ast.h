@@ -9,6 +9,7 @@ class AST {
    AST();
    virtual ~AST() = 0;
    virtual int evaluate() = 0;
+   virtual string toEwe() = 0;
 };
 
 class BinaryNode : public AST {
@@ -40,6 +41,7 @@ class AddNode : public BinaryNode {
    AddNode(AST* left, AST* right);
    
    int evaluate();
+   string toEwe();
 };
 
 class SubNode : public BinaryNode {
@@ -47,6 +49,7 @@ class SubNode : public BinaryNode {
    SubNode(AST* left, AST* right);
 
    int evaluate();
+   string toEwe();
 };
 
 class TimesNode : public BinaryNode {
@@ -54,6 +57,7 @@ class TimesNode : public BinaryNode {
    TimesNode(AST* left, AST* right);
    
    int evaluate();
+   string toEwe();
 };
 
 class DivideNode : public BinaryNode {
@@ -61,6 +65,7 @@ class DivideNode : public BinaryNode {
    DivideNode(AST* left, AST* right);
    
    int evaluate();
+   string toEwe();
 };
 
 class ModNode : public BinaryNode {
@@ -68,6 +73,7 @@ class ModNode : public BinaryNode {
    ModNode(AST* left, AST* right);
    
    int evaluate();
+   string toEwe();
 };
 
 class NumNode : public AST {
@@ -75,6 +81,7 @@ class NumNode : public AST {
    NumNode(int n);
 
    int evaluate();
+   string toEwe();
 
  private:
    int val;
@@ -85,6 +92,7 @@ class IdentifierNode : public AST{
    IdentifierNode(string id);
 
    int evaluate();
+   string toEwe();
  
  private:
    string id;
@@ -96,6 +104,7 @@ class EqualsNode : public BinaryNode {
    EqualsNode(AST* left, AST* right);
 
    int evaluate();
+   string toEwe();
 };
 
 class RecallNode : public AST {
@@ -103,6 +112,7 @@ class RecallNode : public AST {
    RecallNode();
 
    int evaluate();
+   string toEwe();
 };
 
 class StoreNode : public UnaryNode {
@@ -110,6 +120,7 @@ class StoreNode : public UnaryNode {
    StoreNode(AST* sub);
 
    int evaluate();
+   string toEwe();
 };
 
 class PlusNode : public UnaryNode {
@@ -117,6 +128,7 @@ class PlusNode : public UnaryNode {
    PlusNode(AST* sub);
 
    int evaluate();
+   string toEwe();
 };
 
 class MinusNode : public UnaryNode {
@@ -124,6 +136,7 @@ class MinusNode : public UnaryNode {
    MinusNode(AST* sub);
 
    int evaluate();
+   string toEwe();
 };
 
 class ClearNode : public AST {
@@ -131,6 +144,7 @@ class ClearNode : public AST {
    ClearNode();
 
    int evaluate();
+   string toEwe();
 };
 
 
