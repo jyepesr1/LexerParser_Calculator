@@ -46,12 +46,13 @@ string Calculator::compile(string expr){
       string var = expr.substr(0, 1);
 
       comp = "#Expresion "+expr+"\n";
-      comp+= "#expr"+ss.str()+"\n";
+      comp+= "expr"+ss.str()+":\n";
 
       comp+= "# Instrucciones antes del recorrido del arbol abstracto sintactico\n";
       comp+= "   sp      := 1000\n";
       comp+= "   one     := 1\n";
       comp+= "   zero    := 0\n";
+      comp+= recorrerVariables();
       comp+= "   memory  := zero\n";
       comp+= "# Comienza el recorrido del arbol en postorden\n";
 
@@ -72,22 +73,6 @@ string Calculator::compile(string expr){
    delete parser;
    
    return comp;
-}
-
-void Calculator::store(int val) {
-   memory = val;
-}
-
-int Calculator::recall() {
-   return memory;
-}
-
-int Calculator::getVar(string a){
-	return variables[a];
-}
-
-void Calculator::setVar(string id, int a){
-   variables[id] = a;
 }
 
 void Calculator::setEnv(char* env[]){
@@ -118,8 +103,38 @@ string Calculator::recorrerMapa(){
       var+="equ  "+(*itr).first +"           M["+ss.str()+"]\n";
       ss.str("");
       a++;
- }
+   }
 
- return var;
+   return var;
+}
 
+string Calculator::recorrerVariables(){
+   stringstream ss;
+   string var="";
+   int a;
+   map<string,int>::const_iterator itr;
+   for(itr = variables.begin(); itr!=variables.end(); itr++){
+      a = (*itr).second;
+      ss << a;
+      var+="   "+(*itr).first +"       := "+ss.str()+"\n";
+      ss.str("");
+   }
+
+   return var;
+}
+
+void Calculator::store(int val) {
+   memory = val;
+}
+
+int Calculator::recall() {
+   return memory;
+}
+
+int Calculator::getVar(string a){
+  return variables[a];
+}
+
+void Calculator::setVar(string id, int a){
+   variables[id] = a;
 }
