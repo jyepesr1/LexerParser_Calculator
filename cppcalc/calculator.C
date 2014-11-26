@@ -12,11 +12,15 @@ memory(0)
 
 int Calculator::eval(string expr) {
 
+   int result;
+
    Parser* parser = new Parser(new istringstream(expr));
    
    AST* tree = parser->parse();
-   
-   int result = tree->evaluate();
+
+   if(tree != NULL) {
+      result = tree->evaluate();
+   }
    
    delete tree;
    
@@ -28,6 +32,7 @@ int Calculator::eval(string expr) {
 string Calculator::compile(string expr){
 
    static int i=1;
+   string comp="";
 
    stringstream ss;
    ss << i;
@@ -36,28 +41,31 @@ string Calculator::compile(string expr){
    
    AST* tree = parser->parse();
 
-   string var = expr.substr(0, 1);
+   if(tree!=NULL){
 
-   string comp = "#Expresion "+expr+"\n";
-   comp+= "expr"+ss.str()+"\n";
+      string var = expr.substr(0, 1);
 
-   comp+= "# Instrucciones antes del recorrido del arbol abstracto sintactico\n";
-   comp+= "   sp      := 1000\n";
-   comp+= "   one     := 1\n";
-   comp+= "   zero    := 0\n";
-   comp+= "   memory  := zero\n";
-   comp+= "# Comienza el recorrido del arbol en postorden\n";
+      comp = "#Expresion "+expr+"\n";
+      comp+= "#expr"+ss.str()+"\n";
 
-   comp+= tree->toEwe();
+      comp+= "# Instrucciones antes del recorrido del arbol abstracto sintactico\n";
+      comp+= "   sp      := 1000\n";
+      comp+= "   one     := 1\n";
+      comp+= "   zero    := 0\n";
+      comp+= "   memory  := zero\n";
+      comp+= "# Comienza el recorrido del arbol en postorden\n";
 
-   comp+= "# Assign\n";
-   comp+= "   "+var+" := M[sp+0]\n";
-   comp+= "# Write Result\n";
-   comp+= "   operator1 := M[sp+0]\n";
-   comp+= "   sp := sp - one\n";
-   comp+= "   writeInt(operator1)\n";
-   
-   i++;
+      comp+= tree->toEwe();
+
+      comp+= "# Assign\n";
+      comp+= "   "+var+" := M[sp+0]\n";
+      comp+= "# Write Result\n";
+      comp+= "   operator1 := M[sp+0]\n";
+      comp+= "   sp := sp - one\n";
+      comp+= "   writeInt(operator1)\n";
+      
+      i++;
+   }
    
    delete tree;
    
@@ -98,4 +106,20 @@ void Calculator::setEnv(char* env[]){
       }
       i++;
    }
+}
+
+string Calculator::recorrerMapa(){
+   stringstream ss;
+   string var="";
+   int a=6;
+   map<string,int>::const_iterator itr;
+   for(itr = variables.begin(); itr!=variables.end(); itr++){
+      ss << a;
+      var+="equ  "+(*itr).first +"           M["+ss.str()+"]\n";
+      ss.str("");
+      a++;
+ }
+
+ return var;
+
 }

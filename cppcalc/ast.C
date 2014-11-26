@@ -284,7 +284,6 @@ string PlusNode::toEwe(){
          comp+= "# Memory Plus\n";
          comp+= "   operator2 := M[sp+0]\n";
          comp+= "   memory := memory + operator2\n";
-         comp+= "   M[sp+0] := memory\n";
 
   return comp;
 }
@@ -306,7 +305,6 @@ string MinusNode::toEwe(){
          comp+= "# Memory Minus\n";
          comp+= "   operator2 := M[sp+0]\n";
          comp+= "   memory := memory - operator2\n";
-         comp+= "   M[sp+0] := memory\n";
 
   return comp;
 }

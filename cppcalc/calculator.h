@@ -18,6 +18,7 @@ class Calculator {
    int getVar(string id);
    void setVar(string id, int a);
    void setEnv(char* env[]);
+   string recorrerMapa();
 
  private:
    int memory;

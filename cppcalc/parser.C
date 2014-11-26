@@ -43,46 +43,47 @@ AST* Parser::Stmts(AST* e){
    return e;
  }
 
-AST* Parser::Stmt(){
-    Token* t = scan->getToken();
-    
-    if(t->getType() == identifier){
-        t= scan->getToken();
-        string id = t->getLex();
-        if(t->getType() == equals){
-            AST* result = Expr();
-            t=scan->getToken();
-            if(t->getType() == semicolon){
-              return new EqualsNode(new IdentifierNode(id),result); 
-            }else{
-              cout << "Expected ';' found: " 
-              << t->getType() << " at line: "
-              << t->getLine() << " at Col: "
-              << t->getCol() 
-              << endl;
+ AST* Parser::Stmt(){
+  Token* t = scan->getToken();
 
-              throw ParseError;    
-            }
-            
-        }else{
-          cout << "Expected '=' found: " 
-          << t->getType() << " at line: "
-          << t->getLine() << " at Col: "
-          << t->getCol() 
-          << endl;
+  if(t->getType() != identifier){
 
-          throw ParseError; 
-        }
-    }else{
-        cout << "Expected 'identifier' found: " 
-          << t->getType() << " at line: "
-          << t->getLine() << " at Col: "
-          << t->getCol() 
-          << endl;
+    cout << "Expected 'identifier' found: " 
+    << t->getType() << " at line: "
+    << t->getLine() << " at Col: "
+    << t->getCol() 
+    << endl;
 
-          throw ParseError; 
-    }
+    throw ParseError; 
+  }
+  string id = t->getLex();
+  t= scan->getToken();
+
+  if(t->getType() != equals){
+
+    cout << "Expected '=' found: " 
+    << t->getType() << " at line: "
+    << t->getLine() << " at Col: "
+    << t->getCol() 
+    << endl;
+
+    throw ParseError; 
+  }
+
+  AST* result = Expr();
+  t=scan->getToken();
+  if(t->getType() == semicolon){
+    return new EqualsNode(new IdentifierNode(id),result); 
+  }
+  cout << "Expected ';' found: " 
+  << t->getType() << " at line: "
+  << t->getLine() << " at Col: "
+  << t->getCol() 
+  << endl;
+
+  throw ParseError;    
 }
+
 
 AST* Parser::Expr() {
    return RestExpr(Term());
