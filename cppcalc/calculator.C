@@ -43,6 +43,8 @@ string Calculator::compile(string expr){
 
    if(tree!=NULL){
 
+      static bool primera = true;
+
       string var = expr.substr(0, 1);
 
       comp = "#Expresion "+expr+"\n";
@@ -52,8 +54,12 @@ string Calculator::compile(string expr){
       comp+= "   sp      := 1000\n";
       comp+= "   one     := 1\n";
       comp+= "   zero    := 0\n";
-      comp+= recorrerVariables();
-      comp+= "   memory  := zero\n";
+      if(primera){
+         comp+= recorrerVariables();
+         comp+= "   memory  := zero\n";
+
+         primera=false;
+      }
       comp+= "# Comienza el recorrido del arbol en postorden\n";
 
       comp+= tree->toEwe();
@@ -82,12 +88,11 @@ void Calculator::setEnv(char* env[]){
    int valor=0;
    while(env[i] != NULL){
       vars = env[i];
-      if(vars.find("CALCVAR_")==0){
+      if(vars.find("CALCVAR_") != string::npos){
          var= vars.at(8);
          istringstream ss(vars.substr(10));
          ss >> valor;
          variables[var]=valor;
-         break;
       }
       i++;
    }

@@ -14,6 +14,7 @@ int main(int argc, char* argv[], char* env[]) {
   string line;
   string var;
   bool hayFichero=false;
+  bool compilador=false;
 
   calc = new Calculator();
 
@@ -22,69 +23,77 @@ int main(int argc, char* argv[], char* env[]) {
   if(argc>1){
     string opcion = "";
     string var="";
-    string compilador=argv[1];
     int valor=0;
     for(int i=1; i<argc; i++){
       opcion=argv[i];
+
       if(opcion.compare("-v")==0){
         if(++i < argc){
           string vars = argv[i];
-          var= vars.substr(0,vars.find("="));
-          cout << var << endl;
+          var= vars.substr(0,1);
           istringstream ss(vars.substr(2));
           ss >> valor;
           calc->setVar(var, valor);
         }
-      }else if(opcion.compare("-c")==0 and (i==argc-1)){
-        hayFichero=true;
-        string comp="";
+      }
 
-        while(cin){
+      if(opcion.compare("-c")==0){
+        compilador=true;
 
-          cout << "> ";
+        if(i==argc-1){
+          hayFichero=true;
+          string comp="";
 
-          getline(cin, line);
+          while(cin){
 
-          if(line.length()==0){
-            cout << "\n" << endl;
-            break;
+            cout << "> ";
+
+            getline(cin, line);
+
+            if(line.length()==0){
+              cout << "\n" << endl;
+              break;
+            }
+
+            var = line.substr(0, 1);
+
+            comp+= calc->compile(line);
+
+            int result = calc->eval(line);
+
+            calc->setVar(var, result);
+            
           }
 
-          int result = calc->eval(line);
+          comp+= "end: halt\n";
+          comp+= "equ  memory      M[0]\n";
+          comp+= "equ  one         M[1]\n";
+          comp+= "equ  zero        M[2]\n";
+          comp+= "equ  operator1   M[3]\n";
+          comp+= "equ  operator2   M[4]\n";
+          comp+= "equ  sp          M[5]\n";
 
-          var = line.substr(0, 1);
+          comp+= calc->recorrerMapa();
+          comp+= "equ  stack       M[1000]\n\n";
 
-          calc->setVar(var, result);
+          char *s = new char[comp.length() + 1];
 
-          comp+= calc->compile(line);
+          FILE *fp;
+
+          strcpy(s,comp.c_str());
+
+          fp = fopen ( "a.ewe", "w" );
+
+          fputs(s, fp); 
+
+          fclose ( fp );
         }
 
-        comp+= "end: halt\n";
-            comp+= "equ  memory      M[0]\n";
-            comp+= "equ  one         M[1]\n";
-            comp+= "equ  zero        M[2]\n";
-            comp+= "equ  operator1   M[3]\n";
-            comp+= "equ  operator2   M[4]\n";
-            comp+= "equ  sp          M[5]\n";
+      }
 
-            comp+= calc->recorrerMapa();
-            comp+= "equ  stack       M[1000]\n\n";
+      if(compilador and argc>2){
 
-            char *s = new char[comp.length() + 1];
-
-            FILE *fp;
-
-            strcpy(s,comp.c_str());
-
-            fp = fopen ( "a.ewe", "w" );
-
-            fputs(s, fp); 
-
-            fclose ( fp );
-
-      }else if(compilador.compare("-c") == 0 and argc>2){
-
-        if(opcion.compare("-c")!=0){
+        if(opcion.find(".calc") != string::npos){
           hayFichero= true;
           ifstream entrada;
           string line;
@@ -96,13 +105,17 @@ int main(int argc, char* argv[], char* env[]) {
 
             getline(entrada, line);
 
-            int result = calc->eval(line);
+            if(line.length()==0){
+              break;
+            }
 
             var = line.substr(0, 1);
 
-            calc->setVar(var, result); 
-
             comp+= calc->compile(line);
+
+            int result = calc->eval(line);
+
+            calc->setVar(var, result);
 
           }
 
@@ -136,16 +149,22 @@ int main(int argc, char* argv[], char* env[]) {
 
         }
 
-      }else {
+      }
+
+      if(compilador==false){
         hayFichero= true;
         ifstream entrada;
         string line;
         string var;
         entrada.open(argv[i]);
 
-        do{
+        while(!entrada.eof()){
 
           getline(entrada, line);
+
+          if(line.length()==0){
+            break;
+          }
 
           int result = calc->eval(line);
 
@@ -154,7 +173,7 @@ int main(int argc, char* argv[], char* env[]) {
           calc->setVar(var, result);
 
           cout << "= " << var <<  " <- " << result << endl;               
-        }while(!entrada.eof());
+        }
 
         entrada.close();
       }
@@ -189,5 +208,7 @@ int main(int argc, char* argv[], char* env[]) {
   }
   
   delete calc;
+
+  return 0;
 }
    
